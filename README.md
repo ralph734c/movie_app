@@ -28,9 +28,9 @@ The API used is the [OMDB API](https://www.omdbapi.com/).
     - Note: might help with randomization?
 
 **Thoughts about functionality:**
-- Make a random movie option the default.
-    - Should clicking the movie image go to IMDB, or randomize?
-    - Maybe a button is better, for a clear user experience?
-    - Could randomize the year, maybe?
-- Make search an option as well.
-- A dropdown for the moview type?
+- Use Axios to get data asynchronously.
+- Implement a search textbox with a button to search by title.
+    - Figure out how to fit this in the navbar.
+- Dropdown for type to search by movie series or episode.
+- I wanted to randomize it, but we'd need an IMDB ID or a movie title.
+	- I might be able to use Chat GPT to generate a random list of 100-1,000 movies and store that in an array or something.
