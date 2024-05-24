@@ -1,56 +1,85 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import MovieCard from "./components/MovieCard";
 import Navbar from "./components/Navbar";
+import axios from "axios";
+import db from "../db.json";
+
+const movieAPIurl = "http://www.omdbapi.com/";
+const omdbAPIKey = import.meta.env.VITE_OMDB_API_KEY;
 
 function App() {
-  const [data, setData] = useState({
-    Title: "Lock, Stock and Two Smoking Barrels",
-    Year: "1998",
-    Rated: "R",
-    Released: "28 Aug 1998",
-    Runtime: "107 min",
-    Genre: "Action, Comedy, Crime",
-    Director: "Guy Ritchie",
-    Writer: "Guy Ritchie",
-    Actors: "Jason Flemyng, Dexter Fletcher, Nick Moran",
-    Plot: "Eddy persuades his three pals to pool money for a vital poker game against a powerful local mobster, Hatchet Harry. Eddy loses, after which Harry gives him a week to pay back 500,000 pounds.",
-    Language: "English",
-    Country: "United Kingdom, United States",
-    Awards: "Won 1 BAFTA Award13 wins & 9 nominations total",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BMTAyN2JmZmEtNjAyMy00NzYwLThmY2MtYWQ3OGNhNjExMmM4XkEyXkFqcGdeQXVyNDk3NzU2MTQ@._V1_SX300.jpg",
-    Ratings: [
-      {
-        Source: "Internet Movie Database",
-        Value: "8.1/10",
-      },
-      {
-        Source: "Rotten Tomatoes",
-        Value: "75%",
-      },
-      {
-        Source: "Metacritic",
-        Value: "66/100",
-      },
-    ],
-    Metascore: "66",
-    imdbRating: "8.1",
-    imdbVotes: "616,742",
-    imdbID: "tt0120735",
-    Type: "movie",
-    DVD: "12 Feb 2014",
-    BoxOffice: "$3,753,929",
-    Production: "N/A",
-    Website: "N/A",
-    Response: "True",
-  });
+  const [randomNumber, setRandomNumber] = useState("");
+  const [favoriteList, setFavoriteList] = useState([]); // TODO
+  const [movieData, setMovieData] = useState(db.favorites[0]);
+
+  const generateRandomNumber = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  const handleClick = () => {
+    const min = 1;
+    const max = 9999999;
+    const number = generateRandomNumber(min, max);
+    const formattedNumber = String(number).padStart(7, "0");
+    setRandomNumber(`tt${formattedNumber}`);
+  };
+
+  const getFavorites = async () => {
+    try {
+      const response = await fetch("http://localhost:3030/favorites");
+      const result = await response.json();
+      setFavoriteList(result);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  useEffect(() => {
+    getFavorites();
+  }, []);
+
+  useEffect(() => {
+    if (randomNumber) {
+      const getMovie = async () => {
+        try {
+          const { data: response } = await axios.get(
+            `${movieAPIurl}?apikey=${omdbAPIKey}&i=${randomNumber}`
+          );
+          setMovieData(response);
+          console.log(response);
+        } catch (error) {
+          console.error(error);
+          setMovieData(null)
+        }
+      };
+      getMovie();
+    }
+  }, [randomNumber]);
 
   return (
-    <>
+    <div>
       <Navbar />
-      <MovieCard movie={data} />
-    </>
+      <button
+        onClick={handleClick}
+        className="bg-slate-950 text-white font-bold py-2 px-4 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out hover:scale-105 hover:bg-slate-900"
+      >
+        Find Random Media
+      </button>
+      {randomNumber && <p>Generated Number: {`IMDB ID: tt${randomNumber}`}</p>}
+      <div>
+        {movieData ? (
+          <MovieCard
+            movie={movieData}
+            ratings={movieData.Ratings}
+            director={movieData.Director}
+            rated={movieData.Rated}
+          />
+        ) : (
+          <p>Loading...</p>
+        )}
+      </div>
+    </div>
   );
 }
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
+import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 
 const Navbar = () => {
   // State to manage the navbar's visibility
@@ -13,20 +13,21 @@ const Navbar = () => {
   // Array containing navigation items
   const navItems = [
     { id: 1, text: "Home" },
-    { id: 2, text: "Random" },
     { id: 3, text: "Search" },
   ];
   return (
     <div className="bg-black flex justify-between items-center h-24 max-w-[1240px] mx-auto px-4 text-white">
       {/* Logo */}
-      <h1 className="w-full text-3xl font-bold text-emerald-200">Another Movie App</h1>
+      <h1 className="w-full text-left text-3xl font-bold text-emerald-200">
+        Another Movie App
+      </h1>
 
       {/* Desktop Navigation */}
       <ul className="hidden md:flex">
         {navItems.map((item) => (
           <li
             key={item.id}
-            className="p-4 hover:bg-[#00df9a] rounded-xl m-2 cursor-pointer duration-300 hover:text-black"
+            className="p-4 hover:bg-[#00df9a] rounded-xl m-2 cursor-pointer duration-300 hover:text-black text-emerald-200"
           >
             {item.text}
           </li>
@@ -61,6 +62,6 @@ const Navbar = () => {
       </ul>
     </div>
   );
-}
+};
 
 export default Navbar;
